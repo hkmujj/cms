@@ -86,9 +86,17 @@ jQuery(function() {
 
 <div class="layout fixed bg-darkblue">
 <div class="container">
-<div class="navbar navbar-big bg-inverse radius">
+<div class="navbar navbar-big bg-inverse radius" style="padding-bottom: 5px;">
   <div class="navbar-head">
     <button class="button bg icon-navicon" data-target="#navbar-bg1"></button>
+    {if !$memberoff}<!--判断会员中心app是否开启-->
+             {if !empty($auth)}<!--判断会员是否登陆-->
+               <a href="{url('member/index/index')}" class="login-navicon button bg-blue">{if $auth['nickname']}{$auth['nickname']}{else}会员中心{/if}</a> <a class="login-navicon button bg-blue" href="{url('member/index/logout')}">退出</a>
+              {else}
+                <a class="login-navicon button bg-blue" href="{url('member/index/login')}">登录</a> <a class="login-navicon button bg-blue" href="{url('member/index/regist')}">注册</a>
+                {if $openapi} <a class="openapi" href="{$openapi['sinaurl']}"><img src="__PUBLIC__/openapi/images/sina_login_btn.png"></a>&nbsp;&nbsp;<a class="openapi" href="{$openapi['qqurl']}"><img src="__PUBLIC__/openapi/images/qq_login.gif"></a>{/if}
+             {/if}
+           {/if}
     <a href="{url()}"><img src="__PUBLICAPP__/images/36-white.png" class="img-responsive" /></a>
   </div>  
   <div class="navbar-body nav-navicon" id="navbar-bg1">
@@ -119,7 +127,7 @@ jQuery(function() {
           </li>
        {/loop}
     </ul>
-    <div class="navbar-text navbar-right">
+    <div class="hidden-l navbar-text navbar-right">
           {if !$memberoff}<!--判断会员中心app是否开启-->
              {if !empty($auth)}<!--判断会员是否登陆-->
                <a href="{url('member/index/index')}" class="button bg-blue">{if $auth['nickname']}{$auth['nickname']}{else}会员中心{/if}</a> <a class="button bg-blue" href="{url('member/index/logout')}">退出</a>

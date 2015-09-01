@@ -60,7 +60,7 @@ td,th{padding:0;}
 .button-little{padding:3px 5px;font-size:12px;font-weight:normal;line-height:16px;}
 .button.bg-main,.button.bg-sub,.button.bg-dot,.button.bg-black,.button.bg-gray,.button.bg-red,.button.bg-yellow,.button.bg-blue,.button.bg-green{color:#fff;}
 .layout{width:100%;}
-.container,.container-layout{margin:0 auto;padding:0 10px;}
+.container,.container-layout{margin:0 auto;padding:0 0px;}
 @media (min-width:760px){.container{width:760px;}}
 @media (min-width:1000px){.container{width:1000px;}}
 @media (min-width:1200px){.container{width:1200px;}}
@@ -416,6 +416,12 @@ textarea.input{height:auto;}
 .icon-navicon{display:none;}
 @media (max-width:760px){
 .icon-navicon{display:block;}
+.nav-navicon, .nav.nav-navicon,.navbar-body.nav-navicon{display:none;}
+}
+.login-navicon{display:none;}
+@media (max-width:760px){
+.login-navicon{display:inline-block;float: right;font-family: "FontAwesome";font-style: normal;
+    font-weight: normal;line-height: 1;vertical-align: baseline;margin-top: 6px;margin-right: 3px;}
 .nav-navicon, .nav.nav-navicon,.navbar-body.nav-navicon{display:none;}
 }
 .nav{list-style:none;padding:5px 0 0 0;margin:0;}
