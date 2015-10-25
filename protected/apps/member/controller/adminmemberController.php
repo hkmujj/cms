@@ -75,6 +75,7 @@ class adminmemberController extends appadminController{
 			$id=$_POST['id'];
 			$oldrmb=intval($_POST['oldrmb']);
 			$data=array();
+			$data['sms_lcount']=intval($_POST['sms_lcount']);
 			$data['rmb']=intval($_POST['rmb']);
 			if($data['rmb']<$oldrmb || $data['rmb']<0) $this->error('充值累计金额不得比之前少且不小于0~');
 			$data['groupid']=intval($_POST['groupid']);
