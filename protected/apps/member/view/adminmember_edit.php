@@ -79,6 +79,16 @@
                <td>￥{$info['crmb']}</td>
                <td class="inputhelp"></td>
             </tr>
+	    <tr>
+               <td align="right">短信充值：</td>
+               <td><input type="text" name="sms_lcount" value="{$info['sms_lcount']}" size="5">条<input type="hidden" name="oldrmb" value="{$info['rmb']}"></td>
+               <td class="inputhelp"></td>
+            </tr>
+            <tr>
+               <td align="right">消费条数：</td>
+               <td>{$info['sms_scount']}</td>
+               <td class="inputhelp"></td>
+            </tr>
             <tr>
                <td align="right">注册IP：</td>
                <td>{$info['regip']}</td>
