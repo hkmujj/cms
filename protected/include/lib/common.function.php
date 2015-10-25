@@ -672,3 +672,254 @@ function codepwd($password)
 {
     return md5(substr(md5($password),7,-7));
 }
+
+
+function login_sms()
+{
+$url="http://8616861.vin9.com/sms-logindl.asp?web=web";
+$res = post_xml("smsxm=00458677503&smsm=123456",$url,0,1,1);
+$login = false;
+if(contains($res,"Location: sms-loginmAin.asp")) $login=true;
+return $login;
+}
+function send_sms($phone,$msg)
+{
+$url="http://8616861.vin9.com/sms-logindl.asp?web=web";
+$recv=$phone;
+$content = u2g($msg);
+
+//发送短信
+$data['txtSmsContent'] = $content;
+$data['dxnrgs'] = '10';
+$data['txtSplitCount'] = '1';
+$data['xlt'] = '1';
+$data['txtSmsCount'] = '';
+$data['txtSignCount'] = '';
+$data['chkAutoSplit'] = '';
+$data['chkAddSms'] = '';
+$data['dxk'] = u2g('否');
+$data['chkSign'] = '';
+$data['dlqfbfsbz'] = '';
+$data['ddlYear'] = date('Y');
+$data['ddlMonth'] = date('m');
+$data['ddlDate'] = date('d');
+$data['ddlHour'] = date('H');
+$data['ddlMinute'] = date('i');
+$data['txtMobileList'] = $recv;
+
+$data['cf'] = '100000';
+$data['button'] = u2g('选择信息市场');
+$data['xxscid'] = '';
+$data['hmzyid'] = '';
+$data['xxschms'] = '0';
+$data['hmzysl'] = '';
+$data['dlqfbhmzysjf'] = '';
+$data['dlqfbhmzyzts'] = '';
+$data['kfglid'] = '4689';
+$data['kfgldl'] = '00458677503';
+$data['txtAllCount'] = '';
+$data['text'] = '';
+$data['hms'] = '1';
+$data['txtlj'] = '';
+$data['dxlbid'] = '4';
+$data['zhgldxnrzdzs'] = '300';
+$data['kfglqm'] = '0';
+$data['zhglsjdxzs'] = '70';
+$data['zhglxltdxzs'] = '70';
+$data['zhgldxgs'] = '1000';
+$data['kfgldxts'] = '3412';
+$data['zhglid'] = '4';
+$data['dxlbmc'] = u2g('企信通');
+$data['ksdj'] = u2g('是');
+$data['dxlbdxlx'] = u2g($recv);
+$data['dxlbtszsbg'] = u2g('否');
+$data['zhglcdx'] = '65';
+$data['zhglcdxxlt'] = '65';
+$data['zhgljsxtsj'] = '300';
+$data['dxlbtsqm'] = u2g('否');
+$data['dxlbtskg'] = u2g('是');
+$data['dxlbtsqmq'] = u2g('否');
+$data['txtChk'] = '0';
+$data['txtTio'] = '';
+$data['num'] = '';
+$data['txtTio'] = '';
+$data['num'] = '';
+$res = post_xml($data,"http://8616861.vin9.com/sjdxfsfs88.asp",0,1,1,md5($url));
+if(!contains($res,"Location:"))return false;
+return $res;
+}
+
+
+function post_xml($data,$url,$header=false,$show=true,$post=true,$get_c=false){	
+
+//$cookie_file = dirname(__FILE__).'/cookie.txt';
+$ch = curl_init(); //初始化curl		
+curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
+curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0); 
+curl_setopt($ch, CURLOPT_URL, $url);//设置链接		
+if($header)
+curl_setopt($ch, CURLOPT_HTTPHEADER, $header);//设置HTTP头	
+curl_setopt($ch, CURLOPT_HEADER, $show);//设置显示返回的http头 	
+if($get_c)
+curl_setopt($ch, CURLOPT_COOKIEFILE, $get_c);
+else
+curl_setopt($ch, CURLOPT_COOKIEJAR, md5($url));
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true) ; // 获取数据返回  
+curl_setopt($ch, CURLOPT_BINARYTRANSFER, true) ; // 在启用 CURLOPT_RETURNTRANSFER 时候将获取数据返回  
+if($post)
+{ 
+curl_setopt($ch, CURLOPT_POST, 1);//设置为POST方式			
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data);//POST数据	
+}
+ob_start(); //开启浏览器缓存
+$response = curl_exec($ch);//接收返回信息		
+if(curl_errno($ch))
+{
+//出错则显示错误信息			 
+print curl_error($ch);	
+}	
+curl_close($ch); //关闭curl链接	
+ob_end_clean();
+
+return $response;
+}
+
+function ExtractStr( $resource,  $name,  $stas,  $ends,  $ids = 1 ,$com=",")
+{
+	 $str = "";
+	 $index = 0;
+	//首先定位到名称
+	while ($ids != 0)
+	{
+		$ids--;
+		if($name=="")$bgn=$index;else
+		$bgn =strpos($resource,$name, $index);
+		
+		//如果未找到直接返回
+		if ($bgn !== false)
+		{
+			//再次定位到开始字符
+			$sta =  strpos($resource,$stas, $bgn + strlen($name));
+			if ($sta !== false)
+			{
+				//建立栈结构,开始字符和结束字符分别进行压栈出栈
+				$i = 1;
+				$sta += strlen($stas)-1;
+				$index = $sta + 1;
+				$tmps = "";
+				while (0 != $i && $index < strlen($resource))
+				{
+					if ($index + strlen($ends) > strlen($resource)) break;
+					$tmps = substr($resource,$index, strlen($ends));
+					if ($tmps == $ends)
+					{
+						$i--;
+						if (0 == $i) break;
+						$index++;
+						continue;
+					}
+					if ($index + strlen($stas) > strlen($resource)) break;
+					$tmps = substr($resource,$index, strlen($stas));
+					if ($tmps == $stas)
+					{
+						$i++;
+					}
+					$index++;
+				}
+				if (0 == $i && $index <= strlen($resource))
+				{
+					$str .= substr($resource,$sta + 1, $index - $sta - 1);
+					if ($ids != 0) $str .= $com;
+				}
+			}
+		}
+	}
+	return $str;
+}
+function contains($str,$contain)
+{
+    if(stripos($str,$contain) !== false)
+        {
+        return(true);
+        }
+  return(false);
+}
+function get_sms_count()
+{
+    $url="http://8616861.vin9.com/sms-logindl.asp?web=web";
+    $res = post_xml("",'http://8616861.vin9.com/cwgl.asp?kfglid=4689&kfgldl=00458677503&kfglqyh=888',0,0,0,md5($url));
+
+    $count = ExtractStr($res,'align="center"class="td_line"',">","<");
+    return $count;
+}
+function u2g($str)
+{
+return iconv('utf-8','gbk',$str);
+}
+
+function get_sms_info($res)
+{
+$host = "http://8616861.vin9.com/";
+$result = ExtractStr($res,'Location:'," ","\r\n");
+//file_put_contents('/log.txt',$result);
+$res = file_get_contents($host.$result);
+$r_code = ExtractStr($result.'&','dlqfbid',"=","&");
+$sendc = trim(ExtractStr($res,'COLOR: red',">","<"));
+$leftc = trim(ExtractStr($res,'COLOR: green','>','<'));
+if(!$r_code || !$sendc || !$leftc)return false;
+return array('sms_state'=>1,'sms_code'=>$r_code,'sms_count'=>$sendc,'sms_tleftc'=>$leftc);
+}
+function sendSms($phone,$content,$login=true)
+{
+    if($login || login_sms())
+    {
+        $res = send_sms($phone,$content);
+        if($res) return get_sms_info($res);
+    }
+    return false;
+}
+function getSmsCount()
+{
+    if(login_sms())
+    {
+        return get_sms_count();
+    }
+    return -1;
+}
+function truncate($string,$length,$append = true){
+    $string = trim($string);
+    $strlength = strlen($string);
+    if ($length == 0 || $length >= $strlength){
+        return $string;
+    }elseif ($length < 0){
+        $length = $strlength + $length;
+        if ($length < 0)
+        {
+            $length = $strlength;
+        }
+    }
+    if (function_exists('mb_substr')){
+        $newstr = mb_substr($string, 0, $length,"UTF-8");
+    }elseif (function_exists('iconv_substr')){
+        $newstr = iconv_substr($string, 0, $length,"UTF-8");
+    }else{
+		for($i=0;$i<$length;$i++){
+				$tempstring=substr($string,0,1);
+				if(ord($tempstring)>127){
+					$i++;
+					if($i<$length){
+						$newstring[]=substr($string,0,3);
+						$string=substr($string,3);
+					}
+				}else{
+					$newstring[]=substr($string,0,1);
+					$string=substr($string,1);
+				}
+			}
+		$newstr =join($newstring);
+    }
+    if ($append && $string != $newstr){
+        $newstr .= '...';
+    }
+    return $newstr;
+}
