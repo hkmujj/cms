@@ -153,7 +153,7 @@ jQuery(function() {
   </div>
   <div class="text-center text-white">
      联系电话:{$telephone}&nbsp;&nbsp;&nbsp;&nbsp;QQ:{$QQ}&nbsp;&nbsp;&nbsp;&nbsp;{$email}&nbsp;&nbsp;&nbsp;&nbsp;{$address}&nbsp;&nbsp;&nbsp;&nbsp;{$icp}<br>
-     版权所有 © <a class="fcolor text-white" target="_blank" title="免费版不可去除此版权" href="http://www.yxcms.net">YXcms.net</a> All Rights Reserved 
+     版权所有 © <a class="fcolor text-white" target="_blank" title="版权所有" href="http://www.ziliao.link">ziliao.link</a> All Rights Reserved 
   </div>
 </div>
 </div>
