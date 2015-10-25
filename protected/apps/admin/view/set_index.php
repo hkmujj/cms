@@ -196,7 +196,8 @@ $.jqtab("#tabs","#tab_conbox","click");
 <col>-<page>-<exsort>/=default/column/index
 <col>-<page>/=default/column/index
 <col>/=default/column/index
-index.html=default/index/index</textarea>          
+index.html=default/index/index
+map.html=default/index/map</textarea>          
           </td>
           <td class="inputhelp">
             如果设置规则后导致网站链接无法访问，请检查：<br>

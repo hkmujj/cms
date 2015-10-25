@@ -380,8 +380,7 @@ class newsController extends commonController
 		//文件保存目录
 		$id=in($_POST['id']);
 		$pic=in($_POST['pic']);
-		$pic=str_replace('../', '', $pic);
-		$pic=str_replace('./', '', $pic);
+		if(strstr($pic,"./")||strstr($pic,".\\")) exit('您真闲...');
 		$data['picture']= $this->nopic;
 		if(model('news')->update("id='$id' and account='".$this->mesprefix.$this->auth['account']."'",$data)){
 			$picpath=$this->uploadpath.$pic;

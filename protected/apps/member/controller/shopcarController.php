@@ -61,6 +61,7 @@ class shopcarController extends commonController
         $data['name']=in($_POST['name']);
         $data['price']=(float)$_POST['price'];
         $data['num']=intval($_POST['num']);
+        if($data['price']<=0 && $data['num']<=0) {echo '价格或数量必须是正数~';return;}
         foreach ($data as $val) { 
           if(empty($val)) {echo '商品信息不全或格式错误~';return;}
         }

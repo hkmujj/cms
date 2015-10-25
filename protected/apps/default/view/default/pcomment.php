@@ -18,7 +18,7 @@
                 <input type="submit" class="button bg-blue float-right" value="评论">
             </form>
             <ul class="list-group list-striped margin-top">
-              {comment:{extable=(extend_conment) order=(id desc) where=(aid=#$info['id']# AND type='1' AND ispass='1')}}<!--如果不需要后台审核就显示则 去掉"AND ispass='1'"-->
+              {comment:{extable=(extend_conment) order=(id desc) where=(aid=#$info['id']# AND type='2' AND ispass='1')}}<!--如果不需要后台审核就显示则 去掉"AND ispass='1'"-->
                 <li>{if empty($comment['comby'])} "游客" {else} "{$comment['comby']}" {/if}    IP:{$comment['ip']}     <span class="float-right text-gray">{date($comment['addtime'],Y-m-d H:m:i)}</span></li>
                 <li class="text-indent">{html_out($comment['comcontent'])} </li>
               {/comment}    

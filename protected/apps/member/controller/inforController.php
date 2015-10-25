@@ -36,11 +36,9 @@ class inforController extends commonController
                 $errorinfo=$imgupload->getErrorMsg();
                 if(!empty($errorinfo)) $this->alert($errorinfo);
                 else{
-                    if(!empty($_POST['oldheadpic'])){
-                       $_POST['oldheadpic']=str_replace('../', '', $_POST['oldheadpic']);
-                       $_POST['oldheadpic']=str_replace('./', '', $_POST['oldheadpic']);
-                       $picpath=$this->uploadpath.$_POST['oldheadpic'];
-                       if(file_exists($picpath)) @unlink($picpath);
+                    if(!empty($_POST['oldheadpic'])&&!strstr($_POST['oldheadpic'],"./")&&!strstr($_POST['oldheadpic'],".\\")){
+                           $picpath=$this->uploadpath.$_POST['oldheadpic'];
+                           if(file_exists($picpath)) @unlink($picpath);
                     }
                     $data['headpic']=$tfile.'/'.$fileinfo[0]['savename'];
                 }      

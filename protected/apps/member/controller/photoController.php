@@ -286,8 +286,7 @@ class photoController extends commonController
 	{
 		if(empty($_POST['picname'])) $this->error('参数错误~');
 		$picname=trim($_POST['picname']);
-		$picname=str_replace('../', '', $picname);
-		$picname=str_replace('./', '', $picname);
+		if(strstr($picname,"./")||strstr($picname,".\\")) exit('您真闲...');
 		$path=$this->uploadpath;
 		$lasts=strtolower(substr($picname,-3));
 		if(in_array($lasts,array('gif','jpg','png','bmp'))){
@@ -325,12 +324,12 @@ class photoController extends commonController
 				if(!empty($photos['photolist'])){
 					$phoarr=explode(',',$photos['photolist']);
 					foreach ($phoarr as $vo){
-						$vo=str_replace('../', '', $vo);
-		                $vo=str_replace('./', '', $vo);
-						if(file_exists($path.$vo))
-						@unlink($path.$vo);
-						if(file_exists($path.'thumb_'.$vo))
-						@unlink($path.'thumb_'.$vo);
+		                if(!strstr($vo,"./")&&!strstr($vo,".\\")){
+		                	if(file_exists($path.$vo))
+						    @unlink($path.$vo);
+						    if(file_exists($path.'thumb_'.$vo))
+						    @unlink($path.'thumb_'.$vo);
+		                }
 					}
 				}
 				if(model('photo')->delete("id='$id'"))
@@ -360,12 +359,12 @@ class photoController extends commonController
 				   if(!empty($plist['photolist'])){
 				   	  $phoarr=explode(',',$plist['photolist']);
 				   	  foreach ($phoarr as $vo){
-				   	  	$vo=str_replace('../', '', $vo);
-		                $vo=str_replace('./', '', $vo);
-				   		if(file_exists($path.$vo))
-				   		@unlink($path.$vo);
-				   		if(file_exists($path.'thumb_'.$vo))
-				   		@unlink($path.'thumb_'.$vo);
+		                if(!strstr($vo,"./")&&!strstr($vo,".\\")){
+				   		    if(file_exists($path.$vo))
+				   		    @unlink($path.$vo);
+				   		    if(file_exists($path.'thumb_'.$vo))
+				   		    @unlink($path.'thumb_'.$vo);
+				        }
 				   	  }
 				   }
 				   $delid.=$plist['id'].',';
