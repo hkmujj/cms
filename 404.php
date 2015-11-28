@@ -154,7 +154,7 @@ function check_resource(){
 	{
 		$file =  $base_dir.DIRECTORY_SEPARATOR.'index.php';
 		if(is_file($file)){
-			if(!defined('PHP_404_BASE'))define('PHP_404_BASE',dirname($file));
+			
 			$_SERVER['SCRIPT_FILENAME'] = $file;
 			$_SERVER['SCRIPT_NAME'] = substr($file,strlen($base_dir));
 			include $file;
@@ -203,7 +203,7 @@ function check_resource(){
 			    exit;
 			}
 	}elseif(is_file($file)){
-			if(!defined('PHP_404_BASE'))define('PHP_404_BASE',dirname($file));
+
 			$_SERVER['SCRIPT_FILENAME'] = $file;
 			$_SERVER['SCRIPT_NAME'] = substr($file,strlen($base_dir));
 			include $file;
@@ -224,7 +224,7 @@ if(is_dir($base_dir))
 		$index_file = $base_dir.substr($_SERVER["REQUEST_URI"],0 , $index+10);
 		if(is_file($index_file))
 		{
-			if(!defined('PHP_404_BASE'))define('PHP_404_BASE',dirname($index_file));
+
 			$_SERVER['SCRIPT_NAME'] = substr($index_file,strlen($base_dir));
 			include $index_file;
 		}
