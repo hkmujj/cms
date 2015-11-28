@@ -215,8 +215,12 @@ if(is_dir($base_dir))
 		parse_str($_SERVER['QUERY_STRING'],$_GET);
 		$_REQUEST = array_merge($_GET,$_POST);
 	}
-	if(strpos($_SERVER["REQUEST_URI"], '/index.php/')===0)
-		$_SERVER["REQUEST_URI"] = substr($_SERVER["REQUEST_URI"], 11);
+	if(($index = strpos($_SERVER["REQUEST_URI"], '/index.php/'))!==false){
+		$index_file = $base_dir.substr($_SERVER["REQUEST_URI"],0 , $index+10);
+		if(is_file($index_file))include $index_file;
+		exit;
+	}
+
 	check_resource();
 	exit;
 }
