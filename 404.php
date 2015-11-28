@@ -154,8 +154,11 @@ function check_resource(){
 	{
 		$file =  $base_dir.DIRECTORY_SEPARATOR.'index.php';
 		if(is_file($file)){
-		include $file;
-		exit;			
+			if(!defined('PHP_404_BASE'))define('PHP_404_BASE',dirname($file));
+			$_SERVER['SCRIPT_FILENAME'] = $file;
+			$_SERVER['SCRIPT_NAME'] = substr($file,strlen($base_dir));
+			include $file;
+			exit;
 		}
 
 	}
@@ -195,13 +198,14 @@ function check_resource(){
 				exit(file_get_contents($file));
 			}else
 			{
-
 				header('HTTP/1.1 404 Not Found');
 			    header("status: 404 Not Found");
 			    exit;
 			}
 	}elseif(is_file($file)){
-	
+			if(!defined('PHP_404_BASE'))define('PHP_404_BASE',dirname($file));
+			$_SERVER['SCRIPT_FILENAME'] = $file;
+			$_SERVER['SCRIPT_NAME'] = substr($file,strlen($base_dir));
 			include $file;
 			exit;
 	}
@@ -215,18 +219,22 @@ if(is_dir($base_dir))
 		parse_str($_SERVER['QUERY_STRING'],$_GET);
 		$_REQUEST = array_merge($_GET,$_POST);
 	}
+
 	if(($index = strpos($_SERVER["REQUEST_URI"], '/index.php/'))!==false){
 		$index_file = $base_dir.substr($_SERVER["REQUEST_URI"],0 , $index+10);
-		if(is_file($index_file))include $index_file;
+		if(is_file($index_file))
+		{
+			if(!defined('PHP_404_BASE'))define('PHP_404_BASE',dirname($index_file));
+			$_SERVER['SCRIPT_NAME'] = substr($index_file,strlen($base_dir));
+			include $index_file;
+		}
 		exit;
 	}
-
 	check_resource();
 	exit;
 }
 else if(!defined('MAIN_INDEX'))
 {
-
 	header('HTTP/1.1 404 Not Found');
     header("status: 404 Not Found");
     exit;
