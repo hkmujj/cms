@@ -46,6 +46,16 @@ jQuery(function() {
 });
 //]]>
 </script>
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?1678c59b924ec8c2d95c488ced08cd31";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
 </head>
 <body>
 <div class="layout">

@@ -12,6 +12,58 @@ class indexController extends commonController
   {
       $this->display();
   }
+    public function secuss()
+    {
+        echo '<script>window.close();</script>';
+    }
+    public function notify()
+    {
+        error_reporting(0);
+        ini_set('display_errors', true);
+        ini_set('log_errors', 1);
+        ini_set('error_log', '!phperror.log');
+
+        require_once 'protected/Alipay/Alipay.class.php';
+        $alipay=new Alipay();
+        $res=$alipay->verifyNotify();
+        if(!$res){
+            echo 'fail';
+            exit();
+        }
+
+        //商户订单号
+        $out_trade_no =  $_POST['out_trade_no'];
+        //支付宝交易号
+
+
+        $trade_status = $_POST['trade_status'];
+        if($trade_status=='TRADE_FINISHED' || $trade_status =='TRADE_SUCCESS' || true){
+            $notifyform_model=model('alipayorder');
+            $order = $notifyform_model->select("ali_orderid='$out_trade_no'", 'real_id,real_type', 'id DESC', '1');
+            if(!$order) {
+                echo 'fail';
+                exit();
+            }
+            $order = $order[0];
+
+            if(!model($order['real_type'].'_order')->update("order_id='{$order['real_id']}' and pay_state=0",array('pay_state'=>1,'pay_time'=>date('Y-m-d H:i:s') ))){
+                echo 'fail';
+                exit();
+            }
+            if($order['real_type']=='sms')
+            {
+                $sms_orders = model('sms_order')->select("order_id='{$order['real_id']}'", 'sms_count,user_id','order_id DESC', '1');
+                if($sms_orders)$sms_order_count = $sms_orders[0]['sms_count'];
+                if($sms_order_count)$user = model('members')->find("id='{$sms_orders[0]['user_id']}'");
+                if($user)model('members')->update("id='{$sms_orders[0]['user_id']}'",array('sms_lcount'=>$sms_order_count + $user['sms_lcount']));
+
+            }
+        }else{
+            echo 'fail';
+            exit();
+        }
+        echo 'success';
+    }
 	public function search()
 	{
        if(empty($_GET['keywords'])||empty($_GET['type'])) $this->error('搜索条件不足~');

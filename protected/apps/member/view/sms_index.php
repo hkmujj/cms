@@ -209,7 +209,7 @@ function tpchange()
     <tr>
       <td width="80" align="right">手机号：</td>
       <td  align="left">
-        <input type="text" name="phone" id="title" maxlength="60" size="30" >
+        <input onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"  type="text" name="phone" id="title" maxlength="60" size="30" >
         </td>
       <td class="inputhelp"><font color="red">短信通温馨提醒：企业短信平台发送时间段：每天08：30-18：00，请在正确时间段提交短信!</font></td>
     </tr>

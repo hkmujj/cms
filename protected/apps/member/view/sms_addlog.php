@@ -33,9 +33,9 @@ font-family: "宋体","Verdana","Arial","Helvetica","sans-serif";
                   <td align="center"><font color="brown">{$val['sms_price']}</font></td>
                    
                   <td align="center">{$val['sms_time']}</td>
-                  <td align="center">{if !empty($val['sms_ptime'])}{$val['sms_ptime']}{else}----{/if}</td>
+                  <td align="center">{if !empty($val['pay_time'])}{$val['pay_time']}{else}----{/if}</td>
                   <td align="center">{truncate($val['sms_remark'],10)}</td>
-                 <td align="center">{if $val['sms_state']==1}<font color="blue">成功</font>{else}<font color="red">未处理</font>{/if}</td> 
+                 <td align="center">{if $val['pay_state']==1}<font color="blue">成功</font>{else}<font color="red">未支付</font>{/if}</td>
               </tr>
             {/loop}
             {if !empty($page)}<tr><td colspan="10">{$page}</td></tr>{/if}

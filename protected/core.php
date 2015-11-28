@@ -7,6 +7,8 @@ defined('DEFAULT_ACTION') or define('DEFAULT_ACTION', 'index');
 	
 function urlRoute(){
 	$rewrite = config('REWRITE');
+	if($_SERVER["REQUEST_URI"]=='/notify') $_REQUEST['r'] = 'default/index/notify';
+	else
 	if( !empty($rewrite) ) {
 		if( ($pos = strpos( $_SERVER['REQUEST_URI'], '?' )) !== false ){
 			parse_str( substr( $_SERVER['REQUEST_URI'], $pos + 1 ), $_GET );

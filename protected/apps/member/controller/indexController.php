@@ -25,14 +25,14 @@ class indexController extends commonController
                                          'channel' => '操作列表',
                                          'pages' => Array ( 
                                                      Array ('name' => '发送信息', 'url' => 'member/sms/index' ) ,
-                                                     Array ('name' => '申请充值', 'url' => 'member/sms/add' ) ,
+                                                     Array ('name' => '在线充值', 'url' => 'member/sms/add' ) ,
                                                      Array ('name' => '发送历史', 'url' => 'member/sms/logs' ) ,
                                                      Array ('name' => '充值历史', 'url' => 'member/sms/addlog' ) 
                                           ) 
                                   ) 
                     ) 
                ),
-              2 => Array ( 
+             /* 2 => Array (
                     'title' => '信息发布' ,
                     'channels' => Array ( 
                                   0 => Array ( 
@@ -43,7 +43,7 @@ class indexController extends commonController
                                           ) 
                                   ) 
                     ) 
-               ),
+               ),*/
               3 => Array ( 
                     'title' => '在线交易' ,
                     'channels' => Array ( 

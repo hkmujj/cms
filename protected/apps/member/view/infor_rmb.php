@@ -6,16 +6,16 @@
 </ul>
         <table class="table table-bordered">
             <tr>
-              <th width="200" align="right">入款总额 ：</th>
-              <td>￥{$info['rmb']}</td>
+              <th width="200" align="right">短信总额 ：</th>
+              <td>{$info['sms_tcount']}条</td>
             </tr>
             <tr>
-              <th width="200" align="right">支付总额：</th>
-              <td>￥{$info['crmb']}</td>
+              <th width="200" align="right">使用总额：</th>
+              <td>{$info['sms_scount']}条</td>
             </tr>
             <tr>
-              <th width="200" align="right">余额：</th>
-              <td>￥{$info['rrmb']}</td>
+              <th width="200" align="right">短信余额：</th>
+              <td>{$info['sms_lcount']}条</td>
             </tr>
         </table>
 </div>
