@@ -128,5 +128,5 @@ $ext =  strtolower(pathinfo($file, PATHINFO_EXTENSION));
 if(!$ext) $ext='*';
 if($ext && isset($consts[2][$ext]))
 header('Content-Type: '.$consts[2][$ext]);
-
+check_etag(md5($uri),filemtime($file));
 echo file_get_contents($file);

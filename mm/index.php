@@ -31,7 +31,10 @@ function combine_url($url)
 
 
 $uri = urldecode($_SERVER["REQUEST_URI"]);
-if(strpos($uri, 'op=advertising'))exit;
+if(strpos($uri, 'op=advertising')){
+	check_etag(__FILE__,filemtime(__FILE__));
+	exit;
+}
 $idk = '?op=get_imgs&id=';
 if($idx = strpos($uri, $idk))
 {
@@ -81,8 +84,9 @@ if($idx = strpos($uri, $idk))
 	}
 }
 $uri=iconv('utf-8','gbk',$uri);
+$home_dir = dirname(__FILE__);
 
-$file = dirname(__FILE__).$uri;
+$file = $home_dir.$uri;
 
 //fe($file);
 if(!is_file($file) && substr($file, strlen($file)-1) == '/')
@@ -96,7 +100,6 @@ if(!is_file($file)){
 		$flag = false;
 		$content = file_get_contents($hash);
 		if(trim($content)=='' && (time()-filemtime($hash)>1200))$flag = true;
-		
 	}
 	if($flag)
 	{
@@ -104,7 +107,10 @@ if(!is_file($file)){
 	$content = @file_get_contents($url);
 	}
 	$content = replace_content($content);
-	file_put_contents($hash,$content);
+	if(!is_file($hash)){
+		file_put_contents($hash,$content);
+	}
+	$file = $hash;
 }else
 {
 	$content = file_get_contents($file);
@@ -121,7 +127,68 @@ var _hmt = _hmt || [];
 })();
 </script>
 </body>', $content);
+$func_file = dirname($home_dir).DIRECTORY_SEPARATOR.'func.php';
 
+if(is_file($func_file))
+{
+	require dirname($home_dir).DIRECTORY_SEPARATOR.'func.php';
+	$old_str = '<a href="http://www.fengdunan.com/sex/?aimm" target="_blank">两性<i class="hot icon"></i></a>';
+	$new_str =  pay_global('下载所有图片<i class="hot icon"></i>'
+		,"支付50元,即可显示下载链接"
+		,'<a href="javascript:void(0);">百度网盘账号:supermails@126.com密码:280123Z</a>'
+		,"下载MM图片收费",50,"13164355239");
+	$new_str .= "
+<style>
+.btn {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #e6e6e6;
+    background-repeat: no-repeat;
+    border-color: #ccc #ccc #bbb;
+    border-image: none;
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
+    color: #333;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 13px;
+    line-height: normal;
+    padding: 5px 14px 6px;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+    transition: all 0.1s linear 0s;
+}
+
+.btn:hover {
+    background-position: 0 -15px;
+    color: #333;
+    text-decoration: none;
+}
+.btn.custom{
+    background-color: hsl(312, 80%, 43%);
+      background-repeat: repeat-x;
+      background-image: -khtml-gradient(linear, left top, left bottom, from(hsl(312, 80%, 53%)), to(hsl(312, 80%, 43%)));
+      background-image: -moz-linear-gradient(top, hsl(312, 80%, 53%), hsl(312, 80%, 43%));
+      background-image: -ms-linear-gradient(top, hsl(312, 80%, 53%), hsl(312, 80%, 43%));
+      background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, hsl(312, 80%, 53%)), color-stop(100%, hsl(312, 80%, 43%)));
+      background-image: -webkit-linear-gradient(top, hsl(312, 80%, 53%), hsl(312, 80%, 43%));
+      background-image: -o-linear-gradient(top, hsl(312, 80%, 53%), hsl(312, 80%, 43%));
+      background-image: linear-gradient(hsl(312, 80%, 53%), hsl(312, 80%, 43%));
+      border-color: hsl(312, 80%, 43%) hsl(312, 80%, 43%) hsl(312, 80%, 40.5%);
+      color: #fff;
+      text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.16);
+      -webkit-font-smoothing: antialiased;
+      margin-top:6px;
+  }
+</style>
+	";
+	$content = str_replace($old_str, $new_str, $content);
+}
+
+check_etag(md5($content),filemtime($file),true);
 echo $content;
 
 function replace_content($content)

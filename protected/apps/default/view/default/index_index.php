@@ -35,7 +35,7 @@ document.getElementById('verifyImg').src= "{url('index/verify')}/"+timenow;
        
       <div class="xl12 xm7">
         <div class="panel">
-          <div class="panel-head bg-blue"><h4 class="text-white">推荐资讯</h4></div>
+          <div class="panel-head bg-blue"><h4 class="text-white">热门资料</h4></div>
              <div class="panel-body">
                 <ul class="list-media">
                 {news:{table=(news) field=(id,title,picture,method,description) place=(101) where=(ispass='1') limit=(2)}}

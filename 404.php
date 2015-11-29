@@ -1,4 +1,37 @@
 <?php
+function check_etag($etag,$modifiedTime,$dynamic = false, $notModifiedExit = true,$seconds = 1800)
+{
+	if($dynamic)
+	{
+		header("Cache-control: max-age=0");
+		$netag = md5($etag.$modifiedTime);
+		$cetag = 'W/"'.$netag.'"';
+
+		if ($notModifiedExit && isset($_SERVER['HTTP_IF_NONE_MATCH']) && $cetag == $_SERVER['HTTP_IF_NONE_MATCH']) {
+			header('HTTP/1.1 304 Not Modified');
+			header("status: 304 Not Modified");
+			exit();
+		}else
+		{
+			$netag = md5($etag.$modifiedTime);
+		}
+		header('Etag: "'.$netag.'"');
+	}else{
+		$modifiedTime = date('D, d M Y H:i:s', $modifiedTime) . ' GMT';
+		if ($notModifiedExit && isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && $modifiedTime == $_SERVER['HTTP_IF_MODIFIED_SINCE']) {
+			header('HTTP/1.1 304 Not Modified');
+			header("status: 304 Not Modified");
+			exit();
+		}
+		header("Last-Modified: $modifiedTime");
+		$time = date('D, d M Y H:i:s', time() + $seconds) . ' GMT';
+		header("Expires: $time");
+		//header("Pragma: cache");
+	}
+
+
+
+}
 function get_global_const(){
 $host = $_SERVER["HTTP_HOST"];
 $base_dir = dirname(__FILE__).DIRECTORY_SEPARATOR.substr($host,0,strpos($host,'.'));
@@ -154,7 +187,7 @@ function check_resource(){
 	{
 		$file =  $base_dir.DIRECTORY_SEPARATOR.'index.php';
 		if(is_file($file)){
-			
+
 			$_SERVER['SCRIPT_FILENAME'] = $file;
 			$_SERVER['SCRIPT_NAME'] = substr($file,strlen($base_dir));
 			include $file;
@@ -163,6 +196,7 @@ function check_resource(){
 
 	}
 	$uri = urldecode($_SERVER["REQUEST_URI"]);
+
 	$pi = parse_url($uri);
 	$is_dir = substr($pi["path"], strlen($pi["path"])-1) == '/';
 	if(!$is_dir && is_dir($base_dir.$uri)){header("Location: $uri/");exit;}
@@ -195,6 +229,7 @@ function check_resource(){
         if(!$ext) $ext='*';
 				if($ext && isset($mimetypes[$ext]))
 				header('Content-Type: '.$mimetypes[$ext]);
+				check_etag(md5($uri),filemtime($file));
 				exit(file_get_contents($file));
 			}else
 			{
