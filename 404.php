@@ -1,19 +1,17 @@
 <?php
 function check_etag($etag,$modifiedTime,$dynamic = false, $notModifiedExit = true,$seconds = 1800)
 {
+	if(isset($_SERVER['HTTP_X_REQUESTED_WITH']))return;
 	if($dynamic)
 	{
 		header("Cache-control: max-age=0");
 		$netag = md5($etag.$modifiedTime);
 		$cetag = 'W/"'.$netag.'"';
-
-		if ($notModifiedExit && isset($_SERVER['HTTP_IF_NONE_MATCH']) && $cetag == $_SERVER['HTTP_IF_NONE_MATCH']) {
+		$stag = isset($_SERVER['HTTP_IF_NONE_MATCH'])?$_SERVER['HTTP_IF_NONE_MATCH']:'';
+		if ($notModifiedExit && ('"'.$netag.'"' == $stag || $cetag == $stag)) {
 			header('HTTP/1.1 304 Not Modified');
 			header("status: 304 Not Modified");
 			exit();
-		}else
-		{
-			$netag = md5($etag.$modifiedTime);
 		}
 		header('Etag: "'.$netag.'"');
 	}else{

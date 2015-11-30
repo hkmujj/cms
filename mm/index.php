@@ -29,12 +29,11 @@ function combine_url($url)
 	return $url;
 }
 
-
+$consts = get_global_const();
 $uri = urldecode($_SERVER["REQUEST_URI"]);
-if(strpos($uri, 'op=advertising')){
-	check_etag(__FILE__,filemtime(__FILE__));
-	exit;
-}
+if(strpos($uri, '?op='))header('Content-Type: '.$consts[2]['js']);
+if(strpos($uri, 'op=advertising'))exit;
+
 $idk = '?op=get_imgs&id=';
 if($idx = strpos($uri, $idk))
 {
@@ -80,6 +79,7 @@ if($idx = strpos($uri, $idk))
 				      "id" => $i + 1
 				);
 		}
+
 		exit('var slide_data = '.json_encode($json));
 	}
 }
@@ -136,7 +136,7 @@ if(is_file($func_file))
 	$new_str =  pay_global('下载所有图片<i class="hot icon"></i>'
 		,"支付50元,即可显示下载链接"
 		,'<a href="javascript:void(0);">百度网盘账号:supermails@126.com密码:280123Z</a>'
-		,"下载MM图片收费",50,"13164355239");
+		,"下载MM图片收费",50);
 	$new_str .= "
 <style>
 .btn {
@@ -188,7 +188,19 @@ if(is_file($func_file))
 	$content = str_replace($old_str, $new_str, $content);
 }
 
-check_etag(md5($content),filemtime($file),true);
+
+if(strpos($uri, 'op=count'))
+{
+	header('Content-Type: '.$consts[2]['js']);
+}else
+{
+	$ext =  strtolower(pathinfo($file, PATHINFO_EXTENSION));
+	if(!$ext) $ext='*';
+	if($ext && isset($consts[2][$ext]))
+		header('Content-Type: '.$consts[2][$ext]);
+	check_etag(md5($content),filemtime($file),true);
+}
+
 echo $content;
 
 function replace_content($content)

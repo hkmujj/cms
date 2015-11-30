@@ -41,10 +41,11 @@ function insert_data($table, $data)
     $db = new db_class();
     return $db->db_insert($table, $key_s, $val_s);
 }
-function pay_global($beforetitle="我要下载",$showfee="",$afterlink="",$title = "下载收费",$money = 5,$phone="13164355239")
+function pay_global($beforetitle="我要下载",$showfee="",$afterlink="",$title = "下载收费",$money = 5,$is_direct=false,$phone="13164355239")
 {
     session_start();
     $ret = "";
+    $promt = '';
     $hash = md5($title);
     if (isset($_SESSION[$hash]['pay_over'])) {
         $ret .=  $afterlink;
@@ -70,6 +71,7 @@ function pay_global($beforetitle="我要下载",$showfee="",$afterlink="",$title
             $_SESSION[$hash]['order_id'] = $ali_orderId;
             $_SESSION[$hash]['pay_html'] = $html;
             $_SESSION["_$ali_orderId"] = $hash;
+            if($is_direct)$promt = '$("#paybtn_'.$ali_orderId.'").click();';
         }
     }
     //显示到界面
@@ -92,8 +94,9 @@ function pay_global($beforetitle="我要下载",$showfee="",$afterlink="",$title
                         }, 2000);
                     }
                 });
-            })
-        </script>";
+            {$promt}
+            });
+          </script>";
     }
     return $ret;
 }
