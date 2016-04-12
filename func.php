@@ -1,5 +1,5 @@
 <?php
-$is_Select = true;
+$is_Select = false;
 error_reporting(0);
 ini_set('display_errors', true);
 ini_set('log_errors', 1);
@@ -47,6 +47,8 @@ function pay_global($beforetitle="我要下载",$showfee="",$afterlink="",$title
     $ret = "";
     $promt = '';
     $hash = md5($title);
+    if(strpos($_SERVER['HTTP_USER_AGENT'],'Googlebot'))
+        return '<a href="?pay='.$hash.'">'.$beforetitle.'</a>';
     if (isset($_SESSION[$hash]['pay_over'])) {
         $ret .=  $afterlink;
     } else if(!(isset($_GET['pay'])&&$_GET['pay']) && !isset($_SESSION[$hash]['pay_html'])) {
@@ -55,13 +57,13 @@ function pay_global($beforetitle="我要下载",$showfee="",$afterlink="",$title
     if (isset($_GET['pay'])&&$_GET['pay']) {
         $hash = $_GET['pay'];
         if (!isset($_SESSION[$hash]['pay_html']) && !isset($_SESSION[$hash]['pay_over'])) {
-            $_SESSION[$hash]=array(
-                'phone'=>$phone,
-            );
+            $_SESSION[$hash]=array();
             $alipay = new Alipay();
             //封装订单ID
             $ali_orderId = $alipay->getAlipayOrderId();
-            $data = array('money' => $money, 'ali_orderid' => $ali_orderId, 'createtime' => time());
+            $data = array('money' => $money, 'ali_orderid' => $ali_orderId, 'createtime' => time()
+                ,'useragent'=>$_SERVER["HTTP_USER_AGENT"],'ip'=>$_SERVER["REMOTE_ADDR"],'phone'=>$phone,
+                'title'=>$title);
             insert_data('xp_alipayorder', $data);
             //设置请求数据$money
             $alipay->setRequestForm($ali_orderId,$title, $money);
@@ -117,8 +119,8 @@ function notify()
     $db = new db_class();
     $trade_status = $_POST['trade_status'];
     if ($trade_status == 'TRADE_FINISHED' || $trade_status == 'TRADE_SUCCESS') {
-        $order = $db->db_select('xp_alipayorder', '*', "ali_orderid='$out_trade_no'");
-        if (!$order) {
+        $orders = $db->db_select('xp_alipayorder', '*', "ali_orderid='$out_trade_no'");
+        if (!$orders) {
             echo 'fail';
             exit();
         }
@@ -131,7 +133,9 @@ function notify()
         }
         $time = explode(' ', $time);
         $time = $time[1];
-        SendMsg('13164355239', '下载通知', '支付', '订单号:' . $out_trade_no . ',时间:' . $time . ',金额:' . $order[0]['money'] . '元', false);
+        $phone = $orders[0]['phone'];
+        if(!$phone)$phone = "13164355239";
+        SendMsg($orders[0]['phone'], '支付提醒', $orders[0]['title'], '订单号:' . $out_trade_no . ',时间:' . $time . ',金额:' . $orders[0]['money'] . '元', false);
     } else {
         echo 'fail';
         exit();
@@ -145,7 +149,7 @@ function p($v)
     echo var_dump($v);
 }
 
-function g($s, $n)
+function w_g($s, $n)
 {
     return ExtractStr($s, '<Weather>', '<' . $n . '>', '</' . $n . '>');
 }
@@ -211,7 +215,7 @@ function GetWeather($phone)
     $xml = file_get_contents("http://php.weather.sina.com.cn/xml.php?city=$rgs&password=DJOYnieT8234jlsK&day=1");
 
     if (strpos($xml, '<Weather>') !== false) {
-        $weather = g($xml, 'savedate_weather') . g($xml, 'city') . ",白天" . g($xml, 'status1') . g($xml, 'temperature1') . "℃" . g($xml, 'direction1') . g($xml, 'power1') . "极;夜间" . g($xml, 'status2') . g($xml, 'temperature2') . "℃" . g($xml, 'direction1') . g($xml, 'power1') . "极;衣着:" . g($xml, 'chy_l') . "," . g($xml, 'gm_s') . g($xml, 'yd_s') . '污染:' . g($xml, 'pollution_s') . "。";
+        $weather = w_g($xml, 'savedate_weather') . w_g($xml, 'city') . ",白天" . w_g($xml, 'status1') . w_g($xml, 'temperature1') . "℃" . w_g($xml, 'direction1') . w_g($xml, 'power1') . "极;夜间" . w_g($xml, 'status2') . w_g($xml, 'temperature2') . "℃" . w_g($xml, 'direction1') . w_g($xml, 'power1') . "极;衣着:" . w_g($xml, 'chy_l') . "," . w_g($xml, 'gm_s') . w_g($xml, 'yd_s') . '污染:' . w_g($xml, 'pollution_s') . "。";
         $db->db_insert('xp_se_weather_send', 'wea_detail,wea_date,city', "'" . $weather . "','" . $wea_date . "','" . $gs . "'");
     } else
         $weather = "天气预报发布失败，归属地:" . $gs . "未找到!";
@@ -284,7 +288,7 @@ function SendMsg($phone, $fromName, $subject, $message, $inst = true)
         $db = new db_class();
         $db->db_insert('xp_se_sms', 'sms,self,recv,stime,state,ip', "'" . str_replace("'", "''", $message) . "','" . $_POST['self'] . "','" . $phone . "','" . date('Y-m-d H:i:s') . "'," . ($ra['os'] ? $ra['os'] : 0) . ",'" . get_ip() . "'");
     }
-    $state = isset($ra['os']) ?',"state":' . $ra['os'] ."'":'';
+    $state = isset($ra['os']) ?',"state":' . $ra['os']:'';
     if ($r)
         return '{"summary":"success","desc":"' . $ds . '"' . $state . ' }';
     else

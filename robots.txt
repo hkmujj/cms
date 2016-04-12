@@ -4,3 +4,6 @@
 User-agent: * 
 Disallow: /data
 Disallow: /protected
+Disallow: /*?pay=*
+Disallow: /debug
+Disallow: /test

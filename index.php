@@ -2,7 +2,11 @@
 
 define('MAIN_INDEX',TRUE);
 include '404.php';
-
+if(strpos($_SERVER['HTTP_HOST'],'fydzv.com') !== FALSE)
+{
+    include 'mm/index.php';
+    exit;
+}
 if( !empty($_SERVER['HTTP_X_REWRITE_URL']) ) $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'];
 @set_time_limit(1000); //函数最久执行时间
 @set_magic_quotes_runtime(0);   //关闭特殊字符提交的时候提示数据库错误

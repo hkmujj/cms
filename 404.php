@@ -1,4 +1,13 @@
 <?php
+header("Content-type: text/html; charset=utf-8");
+require_once dirname(__FILE__).'/func.php';
+require dirname(__FILE__).'/debug/auto_prepend.php';
+
+if(isset($_SERVER["HTTP_USER_AGENT"])&&strpos($_SERVER["HTTP_USER_AGENT"], 'YunGuanCe')!==false){
+	header('HTTP/1.1 403 Forbidden');
+	header("status: 403 Forbidden");
+	exit;
+}
 function check_etag($etag,$modifiedTime,$dynamic = false, $notModifiedExit = true,$seconds = 1800)
 {
 	if(isset($_SERVER['HTTP_X_REQUESTED_WITH']))return;
@@ -22,9 +31,9 @@ function check_etag($etag,$modifiedTime,$dynamic = false, $notModifiedExit = tru
 			exit();
 		}
 		header("Last-Modified: $modifiedTime");
-		$time = date('D, d M Y H:i:s', time() + $seconds) . ' GMT';
-		header("Expires: $time");
-		//header("Pragma: cache");
+//		$time = date('D, d M Y H:i:s', time() + 1000000) . ' GMT';
+//		header("Expires: $time");
+//		header("Pragma: cache");
 	}
 
 
@@ -34,7 +43,7 @@ function get_global_const(){
 $host = $_SERVER["HTTP_HOST"];
 $base_dir = dirname(__FILE__).DIRECTORY_SEPARATOR.substr($host,0,strpos($host,'.'));
 $mimetypes = array(
-    '*' => 'application/octet-stream',
+    '*' => 'text/html',
 		'ez' => 'application/andrew-inset',
 		'hqx' => 'application/mac-binhex40',
 		'cpt' => 'application/mac-compactpro',
@@ -244,14 +253,25 @@ function check_resource(){
 	}
 }
 list($host,$base_dir,$mimetypes) = get_global_const();
+
+
 if(is_dir($base_dir))
 {
-	if(!defined('MAIN_INDEX'))
+	parse_str(preg_replace('@.*\?@','',$_SERVER['REQUEST_URI']),$_GET);
+	$_REQUEST = $_GET;
+	$raw_post = file_get_contents('php://input');
+	if($raw_post)
 	{
-		parse_str(file_get_contents('php://input'),$_POST);
-		parse_str($_SERVER['QUERY_STRING'],$_GET);
-		$_REQUEST = array_merge($_GET,$_POST);
+		$_SERVER['REQUEST_METHOD'] = 'POST';
+		$GLOBALS["HTTP_RAW_POST_DATA"] = $raw_post;
+
+		if(strpos($HTTP_RAW_POST_DATA,'='))
+		{
+			parse_str($HTTP_RAW_POST_DATA,$_POST);
+			$_REQUEST = array_merge($_GET,$_POST);
+		}
 	}
+
 
 	if(($index = strpos($_SERVER["REQUEST_URI"], '/index.php/'))!==false){
 		$index_file = $base_dir.substr($_SERVER["REQUEST_URI"],0 , $index+10);
@@ -268,6 +288,11 @@ if(is_dir($base_dir))
 }
 else if(!defined('MAIN_INDEX'))
 {
+	if(strpos($_SERVER['HTTP_HOST'],'fydzv.com') !== FALSE)
+	{
+		include 'mm/index.php';
+		exit;
+	}
 	header('HTTP/1.1 404 Not Found');
     header("status: 404 Not Found");
     exit;
